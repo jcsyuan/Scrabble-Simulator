@@ -6,6 +6,10 @@ public class Word {
 	private int startC;
 	private int points;
 	
+	public Word() {
+		points = 0;
+	}
+	
 	public Word(Tile[] tiles, ALIGNMENT alignment, int startR, int startC, int points) {
 		this.tiles =  new Tile[tiles.length];
 		for(int i = 0; i < tiles.length; i++) {
@@ -15,5 +19,9 @@ public class Word {
 		this.startR = startR;
 		this.startC = startC;
 		this.points = points;
+	}
+	
+	public int getPoints() {
+		return points;
 	}
 }
