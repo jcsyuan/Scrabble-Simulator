@@ -27,6 +27,6 @@ public class Tile {
 	
 	// what to print for ArrayList
 	public String toString() {
-		return this.getLetter() + " " + this.getPoints();
+		return "Letter: " + this.getLetter() + " Points: " + this.getPoints();
 	}
 }
