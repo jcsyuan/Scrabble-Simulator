@@ -24,6 +24,10 @@ public class Word implements Comparable<Word> {
 	public int getPoints() {
 		return points;
 	}
+	
+	public int getLength() {
+		return tiles.length;
+	}
 
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
