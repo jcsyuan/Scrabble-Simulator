@@ -1,5 +1,5 @@
 
-public class Word {
+public class Word implements Comparable<Word> {
 	private Tile[] tiles;
 	private ALIGNMENT alignment;
 	private int startR;
@@ -36,5 +36,11 @@ public class Word {
 		sb.append("Starting Column: " + startC + "\n");
 		sb.append("Points: " + points + "\n");
 		return sb.toString();
+	}
+
+	// allows ArrayList of Words to be sorted
+	public int compareTo(Word o) {
+		// TODO Auto-generated method stub
+		return o.points - this.points;
 	}
 }
