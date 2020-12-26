@@ -20,6 +20,10 @@ public class Word implements Comparable<Word> {
 		this.startC = startC;
 		this.points = points;
 	}
+	
+	public Tile getTile(int index) {
+		return tiles[index];
+	}
 
 	public int getPoints() {
 		return points;
