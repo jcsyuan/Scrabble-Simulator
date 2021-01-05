@@ -2,10 +2,17 @@
 public class Tile {
 	private char letter;
 	private int points;
+	private boolean played = false;
 	
 	public Tile(char letter, int points) {
 		this.letter = letter;
 		this.points = points;
+	}
+	
+	public Tile(char letter, int points, boolean played) {
+		this.letter = letter;
+		this.points = points;
+		this.played = played;
 	}
 	
 	public char getLetter() {
@@ -14,6 +21,10 @@ public class Tile {
 	
 	public int getPoints() {
 		return points;
+	}
+	
+	public boolean isPlayed() {
+		return played;
 	}
 	
 	// basis for removing from ArrayList<Tile>

@@ -8,11 +8,33 @@ public class Board {
 		helperGenerateBoard();
 	}
 	
+	public boolean addTile(Tile tile, int row, int col) {
+		if(row < 0 || col < 0 || row >= BOARD_LENGTH ||col >= BOARD_LENGTH)
+			return false;
+		Cell cell = getCell(row, col);
+		if(cell.setTile(tile))
+			return true;
+		return false;
+	}
+	
+	public void addWord(String word, ALIGNMENT alignment, int startR, int startC) {
+		int rowInc = alignment == ALIGNMENT.HORIZONTAL ? 0 : 1;
+		int colInc = alignment == ALIGNMENT.VERTICAL ? 0 : 1;
+		for(int i = 0; i < word.length(); i++) {
+			cells[startR][startC].setTile(new Tile(word.charAt(i), 1, true));
+			startR += rowInc;
+			startC += colInc;
+		}
+	}
+	
 	public Cell getCell(int row, int col) {
-		return cells[row][col];
+		if(0 <= row && row < BOARD_LENGTH && 0 <= col && col < BOARD_LENGTH)
+			return cells[row][col];
+		return null;
 	}
 	
 	public void printBoard() {
+		System.out.println("CURRENT BOARD");
 		for(int r = 0; r < BOARD_LENGTH; r++) {
 			for(int c = 0; c < BOARD_LENGTH; c++) {
 				Cell tempCell = cells[r][c];
@@ -24,6 +46,29 @@ public class Board {
 			}
 			System.out.println();
 		}
+		System.out.println();
+	}
+	
+	public void printBoardTypes() {
+		System.out.println("BOARD TYPES");
+		for(int r = 0; r < BOARD_LENGTH; r++) {
+			for(int c = 0; c < BOARD_LENGTH; c++) {
+				Cell tempCell = cells[r][c];
+				if (tempCell.getType() == CELL_TYPE.DOUBLE_LETTER) {
+					System.out.print("d ");
+				} else if(tempCell.getType() == CELL_TYPE.TRIPLE_LETTER){
+					System.out.print("t ");
+				} else if(tempCell.getType() == CELL_TYPE.DOUBLE_WORD){
+					System.out.print("D ");
+				} else if(tempCell.getType() == CELL_TYPE.TRIPLE_WORD){
+					System.out.print("T ");
+				} else {
+					System.out.print("* ");
+				}
+			}
+			System.out.println();
+		}
+		System.out.println();
 	}
 	
 	private void helperGenerateBoard() {

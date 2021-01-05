@@ -23,7 +23,7 @@ public class Dictionary {
 	}
 	
 	private void helperScanFile() throws FileNotFoundException {
-		File file = new File("small_dictionary.txt"); 
+		File file = new File("large_dictionary.txt"); 
 	    Scanner sc = new Scanner(file);
 	    while (sc.hasNextLine()) {
 	    	validWords.add(sc.nextLine());

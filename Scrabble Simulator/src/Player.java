@@ -20,4 +20,22 @@ public class Player {
 	public Tile[] getTiles() {
 		return tiles;
 	}
+	
+	public void addPoints(int points) {
+		this.points += points;
+	}
+	
+	public boolean replaceTile(Tile tile, ArrayList<Tile> remainingTiles) {
+		for(int i = 0; i < tiles.length; i++) {
+			if(tile.equals(tiles[i])) {
+				tiles[i] = null;
+				Random rand = new Random();
+				int randomIndex = rand.nextInt(remainingTiles.size());
+				tiles[i] = remainingTiles.get(randomIndex);
+				remainingTiles.remove(randomIndex);
+				return true;
+			}
+		}
+		return false;
+	}
 }

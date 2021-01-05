@@ -9,11 +9,15 @@ public class Cell {
 	}
 	
 	public boolean setTile(Tile tile) {
-		if(tile == null) {
+		if(this.tile == null) {
 			this.tile = tile;
 			return true;
 		}
 		return false;
+	}
+	
+	public void resetCell() {
+		tile = null;
 	}
 	
 	public Tile getTile() {
