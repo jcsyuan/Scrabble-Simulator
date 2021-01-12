@@ -1,6 +1,6 @@
 # Scrabble-Simulator
 
-Simulates a classic game of Scrabble. The simulator generates the optimal move for a player given a distinct Scrabble board using a recurisve algorithm implemented in the Optimizer class.
+Using Java to simulate a classic game of Scrabble. The simulator generates the optimal move for a player given a distinct Scrabble board using a recurisve algorithm implemented in the Optimizer class.
 
 Game
 - Board
