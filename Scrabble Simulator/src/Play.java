@@ -1,11 +1,14 @@
 import java.util.ArrayList;
 
+// Play class: represents a possible play for a player
 public class Play implements Comparable<Play>{
+	
+	// stores all words created during a possible turn, points of the play, and words to delete
 	private ArrayList<Word> words;
 	private Word extendedWord;
 	private int points;
 	
-	
+	// initializer
 	public Play(Word firstWord) {
 		this.words = new ArrayList<Word>();
 		this.words.add(firstWord);
@@ -14,30 +17,33 @@ public class Play implements Comparable<Play>{
 		}
 	}
 	
+	// add a word to the play
 	public void addWord(Word word) {
 		words.add(word);
 	}
 	
+	// if play extends word, add original word
 	public void addExtendedWord(Word word) {
 		extendedWord = new Word(word.getTiles(), word.getAlignment(), word.getStartingRow(), word.getStartingCol(), word.getPoints());
-		System.out.println("ADDED");
-//		extendedWord = word;
-		System.out.println(extendedWord.getWord());
 		this.toString();
 	}
 	
+	// return first word created from play
 	public Word getBaseWord() {
 		return words.get(0);
 	}
 	
+	// return original extended word if possible 
 	public Word getExtendedWord() {
 		return extendedWord;
 	}
 	
+	// return all words created from play
 	public ArrayList<Word> getWords() {
 		return words;
 	}
 	
+	// return total points of play
 	public int getPoints() {
 		return points;
 	}
@@ -47,6 +53,7 @@ public class Play implements Comparable<Play>{
 		return o.points - this.points;
 	}
 	
+	// what variables to print
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("[");

@@ -1,13 +1,18 @@
 
+// Board class: stores the game board, which possibly contains tiles
 public class Board {
+	
+	// represented by a 2D array of cells
 	final static int BOARD_LENGTH = 15;
 	private Cell[][] cells;
 	
+	// initializer
 	public Board() {
 		cells = new Cell[BOARD_LENGTH][BOARD_LENGTH];
 		helperGenerateBoard();
 	}
 	
+	// adds a tile to the specified row and column given
 	public boolean addTile(Tile tile, int row, int col) {
 		if(row < 0 || col < 0 || row >= BOARD_LENGTH ||col >= BOARD_LENGTH)
 			return false;
@@ -17,6 +22,7 @@ public class Board {
 		return false;
 	}
 	
+	// adds a word to the board in the given direction at the given row and column
 	public void addWord(String word, ALIGNMENT alignment, int startR, int startC) {
 		int rowInc = alignment == ALIGNMENT.HORIZONTAL ? 0 : 1;
 		int colInc = alignment == ALIGNMENT.VERTICAL ? 0 : 1;
@@ -27,12 +33,14 @@ public class Board {
 		}
 	}
 	
+	// return the cell at the given row and column
 	public Cell getCell(int row, int col) {
 		if(0 <= row && row < BOARD_LENGTH && 0 <= col && col < BOARD_LENGTH)
 			return cells[row][col];
 		return null;
 	}
 	
+	// print out the tiles on the board
 	public void printBoard() {
 		System.out.println("CURRENT BOARD");
 		for(int r = 0; r < BOARD_LENGTH; r++) {
@@ -49,6 +57,7 @@ public class Board {
 		System.out.println();
 	}
 	
+	// print out the cell types of the board
 	public void printBoardTypes() {
 		System.out.println("BOARD TYPES");
 		for(int r = 0; r < BOARD_LENGTH; r++) {
@@ -71,6 +80,7 @@ public class Board {
 		System.out.println();
 	}
 	
+	// creates board, specifying where the special cells are
 	private void helperGenerateBoard() {
 		for (int r = 0; r < BOARD_LENGTH; r++) {
 			for (int c = 0; c < BOARD_LENGTH; c++) {

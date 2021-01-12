@@ -1,13 +1,17 @@
 import java.util.ArrayList;
 import java.util.Collections;
 
+// Optimizer class: finds the optimal play given a board
 public class Optimizer {
+	
+	// stores dictionary, board, words, and plays to use when determining the best play
 	private Dictionary dictionary;
 	private Board board;
 	private Player player;
 	private ArrayList<Word> playedWords;
 	private ArrayList<Play> possiblePlays;
 
+	// initializer
 	public Optimizer(Dictionary dictionary, Board board, Player player, ArrayList<Word> playedWords) {
 		this.dictionary = dictionary;
 		this.board = board;
@@ -16,14 +20,16 @@ public class Optimizer {
 		this.possiblePlays = new ArrayList<Play>();
 	}
 	
+	// return all plays that optimizer finds
+	public ArrayList<Play> getPossiblePlays() {
+		return possiblePlays;
+	}
+	
+	// print plays that optimizer finds
 	public void printPossiblePlays() {
 		for(int i = 0; i < possiblePlays.size(); i++) {
 			System.out.println(possiblePlays.get(i));
 		}
-	}
-	
-	public ArrayList<Play> getPossiblePlays() {
-		return possiblePlays;
 	}
 
 	// naive logic use max points, doesn't account for special cells, placement,
@@ -31,55 +37,48 @@ public class Optimizer {
 	public Play getOptimalPlay() {
 		for (int i = 0; i < playedWords.size(); i++) {
 			checkDirect(i);
-			checkBorder(i);
+			// checkBorder(i);
 		}
 		Collections.sort(possiblePlays);
 		return possiblePlays.size() > 0 ? possiblePlays.get(0) : null;
 	}
-
+	
 	// check 7 up, 7 down, 7 left, 7 right
 	private void checkDirect(int playedWordIndex) {
 		Word currWord = playedWords.get(playedWordIndex);
 		int startR = currWord.getStartingRow();
 		int startC = currWord.getStartingCol();
-
+		// horizontal word
 		if (currWord.getAlignment() == ALIGNMENT.HORIZONTAL) {
 			for (int letterIndex = 0; letterIndex < currWord.getLength(); letterIndex++) {
+				// first: check left, up, down
 				if (letterIndex == 0) {
 					helperCheckDirectModel(currWord, startR, startC, true, false, true, true);
+				// normal: check up, down
 				} else if (letterIndex == currWord.getLength() - 1) {
 					helperCheckDirectModel(currWord, startR, startC, false, false, true, true);
+				// last: check right, up, down
 				} else {
 					helperCheckDirectModel(currWord, startR, startC, false, true, true, true);
 				}
 				startC++;
 			}
+		// vertical word
 		} else {
 			for (int letterIndex = 0; letterIndex < currWord.getLength(); letterIndex++) {
+				// first: check left, right, up
 				if (letterIndex == 0) {
 					helperCheckDirectModel(currWord, startR, startC, true, true, true, false);
+				// normal: check left, right
 				} else if (letterIndex == currWord.getLength() - 1) {
 					helperCheckDirectModel(currWord, startR, startC, true, true, false, false);
+				// last: check left, right, down
 				} else {
 					helperCheckDirectModel(currWord, startR, startC, true, true, true, false);
 				}
 				startR++;
 			}
 		}
-
-		// horizontal
-		// first: check left, up, down
-		// normal: check up, down
-		// last: check right, up, down
-
-		// vertical
-		// first: check left, right, up
-		// normal: check left, right
-		// last: check left, right, down
-
-		// each tile added: if horizontally added check up and down, if vertically added
-		// check left and right
-
 	}
 
 	// checkDirect helper to eliminate repetition
@@ -103,12 +102,12 @@ public class Optimizer {
 				// if blank tile check all 26 possibilities
 				if (tiles[i].getLetter() == '0') {
 					for (char tempChar = 'A'; tempChar <= 'Z'; tempChar++) {
-						// check if can add tile to board, save in variable, remove from tiles
 						Tile tempNewTile = new Tile(tempChar, 0);
+						// check if tile can be added to board
 						if (board.addTile(tempNewTile, startR + rowInc, startC + colInc)) {
+							// remove tile from player's hand
 							tiles[i] = null;
-							// check if word is made -> if made check additionalWord then add to list, if
-							// not valid don't add to list
+							// get related variables
 							int wordR = startR;
 							int wordC = startC;
 							if (newWordAlignment == ALIGNMENT.HORIZONTAL) {
@@ -117,32 +116,35 @@ public class Optimizer {
 								wordR = helperGetStartingRowCol(startR, startC, newWordAlignment);
 							}
 							String tempWordString = helperGetWord(wordR, wordC, newWordAlignment);
-							
 							Word tempWord = new Word(board, newWordAlignment, wordR, wordC);
 							Play tempPlay = new Play(tempWord);
 							ALIGNMENT additionalAlignment = newWordAlignment == ALIGNMENT.HORIZONTAL ? ALIGNMENT.VERTICAL
 									: ALIGNMENT.HORIZONTAL;
+							// check if added tile creates conflict with other tiles
 							if (helperCheckAdditionalValidWord(tempPlay, startR + rowInc, startC + colInc,
 									additionalAlignment)) {
+								// check if word is valid
 								if (dictionary.checkWordValid(tempWordString)) {
 									if(newWordAlignment == rootWord.getAlignment()) {
 										tempPlay.addExtendedWord(rootWord);
-										System.out.println(tempPlay);
 									}
 									possiblePlays.add(tempPlay);
 								}
+								// regardless of valid word, recurse onto next tile
 								helperRecursiveCheck(rootWord, startR + rowInc, startC + colInc, rowInc, colInc, newWordAlignment, tiles);
 							}
+							// add tile back to player's hand
 							tiles[i] = new Tile('0', 0);
+							// remove tile from board
 							board.getCell(startR + rowInc, startC + colInc).resetCell();
 						}
 					}
 				} else {
-					// check if can add tile to board, save in variable, remove from tiles
+					// check if tile can be added to board
 					if (board.addTile(new Tile(tiles[i].getLetter(), tiles[i].getPoints()), startR + rowInc, startC + colInc)) {
+						// remove tile from player's hand
 						tiles[i] = null;
-						// check if word is made -> if made check additionalWord then add to list, if
-						// not valid don't add to list
+						// get related variables
 						int wordR = startR;
 						int wordC = startC;
 						if (newWordAlignment == ALIGNMENT.HORIZONTAL) {
@@ -151,23 +153,26 @@ public class Optimizer {
 							wordR = helperGetStartingRowCol(startR, startC, newWordAlignment);
 						}
 						String tempWordString = helperGetWord(wordR, wordC, newWordAlignment);
-						
 						Word tempWord = new Word(board, newWordAlignment, wordR, wordC);
 						Play tempPlay = new Play(tempWord);
 						ALIGNMENT additionalAlignment = newWordAlignment == ALIGNMENT.HORIZONTAL ? ALIGNMENT.VERTICAL
 								: ALIGNMENT.HORIZONTAL;
+						// check if added tile creates conflict with other tiles
 						if (helperCheckAdditionalValidWord(tempPlay, startR + rowInc, startC + colInc,
 								additionalAlignment)) {
+							// check if word is valid
 							if (dictionary.checkWordValid(tempWordString)) {
 								if(newWordAlignment == rootWord.getAlignment()) {
 									tempPlay.addExtendedWord(rootWord);
-									System.out.println(tempPlay);
 								}
 								possiblePlays.add(tempPlay);
 							}
+							// regardless of valid word, recurse onto next tile
 							helperRecursiveCheck(rootWord, startR + rowInc, startC + colInc, rowInc, colInc, newWordAlignment, tiles);
 						}
+						// add tile back to player's hand
 						tiles[i] = board.getCell(startR + rowInc, startC + colInc).getTile();
+						// remove tile from board
 						board.getCell(startR + rowInc, startC + colInc).resetCell();
 					}
 				}
@@ -224,16 +229,9 @@ public class Optimizer {
 		return sb.toString();
 	}
 	
-	// check if row/col are in bounds
+	// check if row/column are in bounds
 	private boolean inBounds(int rowCol) {
 		return rowCol >=0 && rowCol <Board.BOARD_LENGTH;
 	}
 
-	// check around borders of word
-	private void checkBorder(int index) {
-		// add to tempExtendedWords if added to top or bottom of vertical and left or
-		// right of horizontal
-	}
 }
-
-// FIRST MOVE METHOD

@@ -1,12 +1,16 @@
 
+// Word class: represents a word to be possibly played in game
 public class Word implements Comparable<Word> {
+	
+	// stores tiles that make up the word, direction, starting row and column and
+	// corresponding points
 	private Tile[] tiles;
 	private ALIGNMENT alignment;
 	private int startR;
 	private int startC;
 	private int points;
 	
-	// creating word through board (optimizer)
+	// initializer: creating word through board (optimizer)
 	public Word(Board board, ALIGNMENT alignment, int startR, int startC) {
 		this.alignment = alignment;
 		this.startR = startR;
@@ -16,11 +20,9 @@ public class Word implements Comparable<Word> {
 		int rowInc = alignment == ALIGNMENT.HORIZONTAL ? 0 : 1;
 		int colInc = alignment == ALIGNMENT.VERTICAL ? 0 : 1;
 		int multiplier = 1;
+		// calculate points of the tiles on the board (taking into account special cells)
 		while(board.getCell(startR, startC) != null && board.getCell(startR, startC).getTile() != null) {
-//			System.out.println("LETTER: "+board.getCell(startR, startC).getTile().getLetter());
-//			System.out.println("POINT: "+board.getCell(startR, startC).getTile().getPoints());
 			CELL_TYPE tempCellType = board.getCell(startR, startC).getType();
-//			System.out.println("CELL TYPE: "+tempCellType);
 			if(tempCellType == CELL_TYPE.DOUBLE_LETTER) {
 				this.points += 2 * board.getCell(startR, startC).getTile().getPoints();
 			} else if(tempCellType == CELL_TYPE.TRIPLE_LETTER) {
@@ -39,9 +41,10 @@ public class Word implements Comparable<Word> {
 			startC += colInc;
 		}
 		this.points *= multiplier;
-//		System.out.println("TOTALPOINTS1: "+this.points);
+		// set starting coordinates
 		startR = this.startR;
 		startC = this.startC;
+		// get the tiles on the Board to store in Word
 		tiles = new Tile[tempLength];
 		for(int i = 0; i < tempLength; i++) {
 			tiles[i] = board.getCell(startR, startC).getTile();
@@ -50,7 +53,7 @@ public class Word implements Comparable<Word> {
 		}
 	}
 	
-	// creating word to manually
+	// initializer: creating word manually given an array of Tiles
 	public Word(Tile[] tiles, ALIGNMENT alignment, int startR, int startC, int points) {
 		this.tiles = new Tile[tiles.length];
 		for (int i = 0; i < tiles.length; i++) {
@@ -62,14 +65,17 @@ public class Word implements Comparable<Word> {
 		this.points = points;
 	}
 	
+	// return tiles used to make up word
 	public Tile[] getTiles() {
 		return tiles;
 	}
 	
+	// return a certain tile given an index
 	public Tile getTile(int index) {
 		return tiles[index];
 	}
-
+	
+	// return string format of the word
 	public String getWord() {
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < tiles.length; i++)
@@ -77,35 +83,41 @@ public class Word implements Comparable<Word> {
 		return sb.toString();
 	}
 
+	// return starting row of word
 	public int getStartingRow() {
 		return startR;
 	}
 
+	// return starting column of word
 	public int getStartingCol() {
 		return startC;
 	}
 
+	// return the points of word
 	public int getPoints() {
 		return points;
 	}
 
+	// return the length of word
 	public int getLength() {
 		return tiles.length;
 	}
 
+	// return direction of word
 	public ALIGNMENT getAlignment() {
 		return alignment;
 	}
 
+	// what variables of the word to print
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("[");
 		for (int i = 0; i < tiles.length - 1; i++)
 			sb.append(tiles[i] + ", ");
-		sb.append(tiles[tiles.length - 1] + "]\n");
-		sb.append("Alignment: " + alignment + "\n");
-		sb.append("Starting Row: " + startR + "\n");
-		sb.append("Starting Column: " + startC + "\n");
+		sb.append(tiles[tiles.length - 1] + "]\t");
+		sb.append("Alignment: " + alignment + "\t");
+		sb.append("Starting Row: " + startR + "\t");
+		sb.append("Starting Col: " + startC + "\t");
 		sb.append("Points: " + points + "\n");
 		return sb.toString();
 	}
