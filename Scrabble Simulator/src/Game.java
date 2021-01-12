@@ -91,6 +91,7 @@ public class Game {
 		for(int player = 0; player < players.size(); player++) {
 			System.out.println("PLAYER " + (player + 1) + ": " + players.get(player));
 		}
+		System.out.println();
 	}
 
 	// helper method to create tiles in the game
